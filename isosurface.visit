@@ -1,0 +1,70 @@
+#!/usr/bin/env visit -cli -s
+
+# Try a nice colormap from colorbrewer
+#colortable = "Blues"
+#invert = 0
+
+# First try a native VisIt colormap
+colortable = "bluehot"
+invert = 1
+
+OpenDatabase("density.h5")
+
+# Add a plot with isosurface
+AddPlot("Pseudocolor", "density")
+AddOperator("Isosurface")
+a = IsosurfaceAttributes()
+a.contourPercent = (30,50,60)
+a.contourMethod = a.Percent
+SetOperatorOptions(a)
+AddOperator("Box")
+b = BoxAttributes()
+b.maxx = 65
+b.miny = 33
+b.maxy = 65
+b.maxz = 33
+SetOperatorOptions(b)
+p = PseudocolorAttributes()
+p.colorTableName = colortable
+p.invertColorTable = invert
+SetPlotOptions(p)
+
+# Add a second plot without isosurface
+AddPlot("Pseudocolor", "density")
+SetActivePlots(1)
+AddOperator("Box")
+b = BoxAttributes()
+b.maxx = 65
+b.maxy = 33
+b.maxz = 33
+SetOperatorOptions(b)
+p = PseudocolorAttributes()
+p.colorTableName = colortable
+p.invertColorTable = invert
+SetPlotOptions(p)
+
+# Hide second legend
+pc = GetPlotOptions()
+pc.legendFlag = 0
+SetPlotOptions(pc)
+
+# Remove bounding box
+an = AnnotationAttributes()
+an.axes3D.bboxFlag = 0
+# Remove axis
+an.axes3D.visible = 0
+
+# Remove reference triad
+an.axes3D.triadFlag = 0
+
+# Remove user info
+an.userInfoFlag = 0
+
+SetAnnotationAttributes(an)
+
+DrawPlots()
+#p.colorTableName = "Blues"
+#SetPlotOptions(p)
+#DrawPlots()
+
+
